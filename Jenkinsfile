@@ -15,7 +15,7 @@ pipeline {
 		stage('3-s3'){
 			steps{
 				sh 'df -h'
-				sh 'touch team7'
+				sh 'touch team6'
 			}
 		}
 		stage('4-s4'){
