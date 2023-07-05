@@ -1,47 +1,43 @@
-pipeline {
-	agent any 
-	stages{
-		stage('1-clonecode'){
-			steps{
-			sh 'echo "welcome to jenkins demo"'
-			}
-		}
-		stage('2-s2'){
-			steps{
-				sh 'lscpu'
-				sh 'whoami'
-			}
-		}
-		stage('3-s3'){
-			steps{
-				sh 'df -h'
-				sh 'touch team6'
-			}
-		}
-		stage('4-s4'){
-			steps{
-				sh 'pwd'
-				sh 'du -h'
-			}
-		}
-        stage('5-s5'){
-			parallel {
-				stage('p1'){
-					steps{
-						echo "first parallel-stage"
-					}
-				}
-				stage('p2'){
-					steps{
-						echo "second parallel-stage"
-					}
-				}
-			}
+pipeline{
+  agent {
+    label {
+      label 'slave1'
+    }
+  }
+  stages{
+    stage('version-control'){
+      steps{
+        checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/etechstaff/allEC2scripts.git']])
+      }
+    }
+    stage('parallel-job'){
+      parallel{
+        stage('sub-job1'){
+          steps{
+            echo 'action1'
+          }
         }
-        stage('6-scriptdemo'){
+        stage('sub-job2'){
+          steps{
+            echo 'action2'
+          }
+        }
+        stage('sub-job3'){
             steps{
-                sh 'echo "this is the end"'
+                echo 'action3'
             }
         }
-	}
+      }
+    }
+    stage('codebuild'){
+      agent {
+        label {
+          label 'slave2'
+        }
+      }
+      steps{
+        sh 'cat /etc/passwd'
+      }
+    }
+  }
 }
