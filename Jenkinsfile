@@ -28,7 +28,7 @@ pipeline {
 			parallel {
 				stage('p1'){
 					steps{
-						echo "first parallel-stage"
+						echo "first parallel-stages"
 					}
 				}
 				stage('p2'){
